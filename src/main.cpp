@@ -15,7 +15,7 @@ bool lightState = false;
 AccelStepper stepperX(1, stepPinX, dirPinX);
 AccelStepper stepperY(1, stepPinY, dirPinY);
 
-
+// Variables to track desired positions
 long desiredPositionX = 0;
 long desiredPositionY = 0;
 
@@ -23,17 +23,17 @@ void setup() {
   Serial.begin(9600);
   
   // Motor X setup
-  stepperX.setMaxSpeed(1000); 
-  stepperX.setAcceleration(500); 
+  stepperX.setMaxSpeed(1000); // Adjust as needed
+  stepperX.setAcceleration(500); // Adjust as needed
 
   // Motor Y setup
-  stepperY.setMaxSpeed(1000); 
-  stepperY.setAcceleration(500);
+  stepperY.setMaxSpeed(1000); // Adjust as needed
+  stepperY.setAcceleration(500); // Adjust as needed
   
   pinMode(lightTrigger, INPUT_PULLUP);
   pinMode(lightPin, OUTPUT);
   
-  lightState = false; 
+  lightState = false; // Turn light off on startup
 }
 
 void loop() {
@@ -44,17 +44,24 @@ void loop() {
       int stepsX = command.substring(0, commaIndex).toInt();
       int stepsY = command.substring(commaIndex + 1).toInt();
 
+      // Invert directions
+      stepsX = -stepsX;
+      stepsY = -stepsY;
+
+      desiredPositionX += stepsX;
+      desiredPositionY += stepsY;
     }
   }
   
-
+  // Set the target position for smooth movement
   stepperX.moveTo(desiredPositionX);
   stepperY.moveTo(desiredPositionY);
 
+  // Move the motors towards the target position
   stepperX.run();
   stepperY.run();
   
-
+  // Check light trigger button state
   int buttonState = digitalRead(lightTrigger);
   if (buttonState == LOW) {
     delay(50);
@@ -63,10 +70,16 @@ void loop() {
     } else {
       lightState = false;
     }
-
+    // Wait until the button is released
     while (digitalRead(lightTrigger) == LOW) {
       delay(10);
     }
   }
 
+  // Control the light state
+  if (lightState) {
+    digitalWrite(lightPin, HIGH); // Turn light on
+  } else {
+    digitalWrite(lightPin, LOW); // Turn light off
+  }
 }
