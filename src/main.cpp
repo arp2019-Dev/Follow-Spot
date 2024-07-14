@@ -23,12 +23,12 @@ void setup() {
   Serial.begin(9600);
   
   // Motor X setup
-  stepperX.setMaxSpeed(1000); // Adjust as needed
-  stepperX.setAcceleration(500); // Adjust as needed
+  stepperX.setMaxSpeed(1000); 
+  stepperX.setAcceleration(500); 
 
   // Motor Y setup
-  stepperY.setMaxSpeed(1000); // Adjust as needed
-  stepperY.setAcceleration(500); // Adjust as needed
+  stepperY.setMaxSpeed(1000); 
+  stepperY.setAcceleration(500); 
   
   pinMode(lightTrigger, INPUT_PULLUP);
   pinMode(lightPin, OUTPUT);
@@ -53,15 +53,15 @@ void loop() {
     }
   }
   
-  // Set the target position for smooth movement
+  // Set the target position for smoother movement
   stepperX.moveTo(desiredPositionX);
   stepperY.moveTo(desiredPositionY);
 
-  // Move the motors towards the target position
+
   stepperX.run();
   stepperY.run();
   
-  // Check light trigger button state
+
   int buttonState = digitalRead(lightTrigger);
   if (buttonState == LOW) {
     delay(50);
@@ -70,13 +70,13 @@ void loop() {
     } else {
       lightState = false;
     }
-    // Wait until the button is released
+
     while (digitalRead(lightTrigger) == LOW) {
       delay(10);
     }
   }
 
-  // Control the light state
+  
   if (lightState) {
     digitalWrite(lightPin, HIGH); // Turn light on
   } else {
